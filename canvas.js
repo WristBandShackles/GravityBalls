@@ -10,10 +10,10 @@ var mouse = {
 };
 
 var colors = [
-	'#2185C5',
-	'#7ECEFD',
-	'#FFF6E5',
-	'#FF7F66'
+	'#0b090a',
+	'#161a1d',
+	'#660708',
+	'#e5383b'
 ];
 
 var gravity = 0.2;
@@ -65,6 +65,7 @@ function Ball(x, y, dx, dy, dxx, dyy, radius, color, ball) {
 	this.dxx = dxx;
 	this.dyy = dyy;
 	this.radius = radius;
+	this.mass = radius;
 	this.color = color;
 	this.ball = ball;
 
@@ -89,16 +90,31 @@ function Ball(x, y, dx, dy, dxx, dyy, radius, color, ball) {
 	};
 
 	this.isThereContact = function(ball) {
-		if (Math.sqrt(((ball.getX() - this.x) * (ball.getX() - this.x)) + ((ball.getY() - this.y) * (ball.getY() - this.y))) < ball.getRadius() + this.radius){
-			ball.flipDX();
-			ball.flipDY();
-			this.flipDX();
-			this.flipDY();
+		if ( !(this === ball) && Math.sqrt(((ball.getX() - this.x) * (ball.getX() - this.x)) + ((ball.getY() - this.y) * (ball.getY() - this.y))) < ball.getRadius() + this.radius){
+			return true;
+		} else {
+			return false;
 		}
 	};
 
+	this.elasticCollision = function(ball) {
+		//X collisions
+		this.dx = (((this.mass - ball.mass) / (this.mass + ball.mass)) * this.dx) + (((2 * ball.mass) / (this.mass + ball.mass)) * ball.dx);
+		ball.dx = (((ball.mass - this.mass) / (this.mass + ball.mass)) * ball.dx) + (((2 * this.mass) / (this.mass + ball.mass)) * this.dx);
+
+		//Y collisions
+		this.dy = (((this.mass - ball.mass) / (this.mass + ball.mass)) * this.dy) + (((2 * ball.mass) / (this.mass + ball.mass)) * ball.dy);
+		ball.dy = (((ball.mass - this.mass) / (this.mass + ball.mass)) * ball.dy) + (((2 * this.mass) / (this.mass + ball.mass)) * this.dy);
+	}
+
 
 	this.update = function() {
+
+		for(let i = 0; i < ballArray.length; i++) {
+			if (ballArray[i].isThereContact(this)) {
+				ballArray[i].elasticCollision(this);
+			}
+		}
 
 		if (this.y + this.radius + this.dy > canvas.height || this.y - this.radius <= 0) {
 			this.dy = -this.dy * friction;
@@ -117,10 +133,6 @@ function Ball(x, y, dx, dy, dxx, dyy, radius, color, ball) {
 		this.y += this.dy; // + (1/2 * this.dyy) Potential addition for better phys;
 		this.x += this.dx;
 		this.draw();
-
-		for(let i = 0; i < ballArray.length; i++) {
-			ballArray[i].isThereContact(this);
-		}
 	};
 
 	
