@@ -153,13 +153,24 @@ var ballArray = [];
 function init() {
 	ballArray = [];
 
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 200; i++) {
 		var radius = randomIntFromRange(8, 20);
 		var x = randomIntFromRange(radius, canvas.width - radius);
 		var y = randomIntFromRange(1 + radius, canvas.height - radius);
 		var dx = randomIntFromRange(-3, 3)
 		var dy = randomIntFromRange(-2, 2)
-	    ballArray.push(new Ball(x, y, dx, dy, dxx, dyy, radius, randomColor(colors)));
+
+		var ball = new Ball(x, y, dx, dy, dxx, dyy, radius, randomColor(colors));
+
+		for (let k = 0; k < ballArray.length; k++) {
+			if (ballArray[k].isThereContact(ball)) {
+				ball.x = randomIntFromRange(radius, canvas.width - radius);
+				ball.y = randomIntFromRange(1 + radius, canvas.height - radius);
+				k = 0;
+			}
+		}
+
+	    ballArray.push(ball);
 	}
 }
 
