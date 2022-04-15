@@ -26,7 +26,7 @@ var friction = 0.98; // 0 - 1 only
 
 // Gravity
 var accelerationX = 0.0;
-var accelerationY = 0.01;
+var accelerationY = 0.045;
 
 
 
@@ -134,7 +134,7 @@ function Particle(x, y, velocityX, velocityY, accelerationX, accelerationY, radi
 
 	// Description
 	this.radius = radius;
-	this.mass = radius/3;
+	this.mass = radius;
 	this.color = color;
 
 	// Each update call represents one tick of time and moves the particle forward
