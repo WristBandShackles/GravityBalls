@@ -26,7 +26,7 @@ var friction = 0.98; // 0 - 1 only
 
 // Gravity
 var accelerationX = 0.0;
-var accelerationY = 0.02;
+var accelerationY = 0.01;
 
 
 
@@ -73,8 +73,13 @@ function isThereContact(particle1, particle2) {
 }
 
 function elasticCollision(particle1, particle2) {
+	const xDiff = particle2.x - particle1.x;
+	const yDiff = particle2.y - particle1.y;
 
-	if (distance(particle1.x, particle1.y, particle2.x, particle2.y) >= particle1.radius + particle2.radius - 20) {
+	const xVelDiff = particle1.velocity.x - particle2.velocity.x;
+	const yVelDiff = particle1.velocity.y - particle2.velocity.y;
+
+	if (xDiff * xVelDiff + yDiff * yVelDiff >=0) {
 		// Mass
 		const m1 = particle1.mass;
 		const m2 = particle2.mass;
@@ -89,8 +94,8 @@ function elasticCollision(particle1, particle2) {
 		
 		// Final Velocity
 		//// X
-		const v1x = u1x * (m1 - m2) / (m1 + m2) + (u2x * 2 * m2) / (m1 + m2);
-		const v2x = u2x * (m2 - m1) / (m1 + m2) + (u1x * 2 * m1) / (m1 + m2);
+		const v1x = (u1x * (m1 - m2) / (m1 + m2) + (u2x * 2 * m2) / (m1 + m2));
+		const v2x = (u2x * (m2 - m1) / (m1 + m2) + (u1x * 2 * m1) / (m1 + m2));
 		//// Y
 		const v1y = u1y * (m1 - m2) / (m1 + m2) + (u2y * 2 * m2) / (m1 + m2);
 		const v2y = u2y * (m2 - m1) / (m1 + m2) + (u1y * 2 * m1) / (m1 + m2);
